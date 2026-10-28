@@ -19,6 +19,10 @@
   :focus-visible {
     @apply outline-none shadow-focus;
   }
+  /* Keyboard-friendly skip target */
+  #main {
+    @apply scroll-mt-24;
+  }
 }
 
 @layer components {
@@ -30,6 +34,63 @@
     content: "";
     @apply h-px w-8 bg-gold;
   }
+
+  /* Animated underline for text links (nav, footer, inline). */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size 250ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Balanced headline wrapping for large display type. */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Edge-to-edge horizontal scroller without a visible scrollbar. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes toast-timer {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+@layer utilities {
+  /* Scroll reveal: elements start soft and settle once in view (see Reveal.tsx). */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toast countdown bar (duration is set inline per alert). */
+@keyframes toast-timer {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -38,5 +99,9 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

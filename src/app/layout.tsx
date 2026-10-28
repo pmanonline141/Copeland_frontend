@@ -20,6 +20,12 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
+      <head>
+        {/* Scroll-reveal starts hidden; without JavaScript the content must still be readable. */}
+        <noscript>
+          <style>{`.reveal{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
+      </head>
       <body>
         <StoreProvider>
           {children}

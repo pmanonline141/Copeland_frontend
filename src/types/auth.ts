@@ -38,9 +38,18 @@ export interface ResetPasswordInput {
 
 /** Where each role lands after sign-in. */
 export const ROLE_HOME: Record<Role, string> = {
-  buyer: "/",
+  buyer: "/buyer",
   supplier: "/supplier",
   shipping: "/shipping",
   staff: "/admin",
   admin: "/admin",
+};
+
+/** Human-readable role names for dashboard chrome. */
+export const ROLE_LABEL: Record<Role, string> = {
+  buyer: "Buyer",
+  supplier: "Supplier",
+  shipping: "Shipping partner",
+  staff: "Copeland staff",
+  admin: "Administrator",
 };

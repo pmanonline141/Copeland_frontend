@@ -216,6 +216,10 @@ const config = {
         overlay: "0 8px 30px rgb(27 27 27 / 0.20)",
         // Gold focus ring (visible keyboard focus, WCAG 2.2). rgb = gold.500.
         focus: "0 0 0 3px rgb(183 141 68 / 0.45)",
+        // Fuller lift for hero collages and floating chips.
+        elevated: "0 10px 20px rgb(27 27 27 / 0.10), 0 30px 60px -20px rgb(1 19 50 / 0.28)",
+        // Soft gold glow for badges and highlight callouts.
+        glow: "0 0 0 1px rgb(183 141 68 / 0.35), 0 12px 40px -12px rgb(183 141 68 / 0.55)",
       },
 
       // Product photos: front/back/detail shots. Use aspect-product on
@@ -270,6 +274,45 @@ const config = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        // Toasts ease in from the top-right and settle; the OUT variant mirrors it.
+        "toast-in": {
+          from: { opacity: "0", transform: "translate3d(115%, -6px, 0) scale(0.97)" },
+          to: { opacity: "1", transform: "translate3d(0, 0, 0) scale(1)" },
+        },
+        "toast-out": {
+          from: { opacity: "1", transform: "translate3d(0, 0, 0) scale(1)" },
+          to: { opacity: "0", transform: "translate3d(115%, -4px, 0) scale(0.96)" },
+        },
+        // Dropdown / mega-menu reveal.
+        "menu-in": {
+          from: { opacity: "0", transform: "translateY(-6px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        // Slide-in drawer (mobile navigation).
+        "drawer-in": {
+          from: { transform: "translateX(100%)" },
+          to: { transform: "translateX(0)" },
+        },
+        // Ambient slow float for decorative hero ornaments.
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        // Trust strip / partner marquee.
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        // Slow zoom on the active hero slide (Ken Burns).
+        kenburns: {
+          from: { transform: "scale(1) translate3d(0, 0, 0)" },
+          to: { transform: "scale(1.09) translate3d(0, -1.5%, 0)" },
+        },
+        // Autoplay progress bar across the bottom of the hero.
+        "slide-progress": {
+          from: { width: "0%" },
+          to: { width: "100%" },
+        },
       },
 
       animation: {
@@ -277,6 +320,15 @@ const config = {
         "fade-up": "fade-up 450ms cubic-bezier(0.22, 1, 0.36, 1) both",
         "sheet-up": "sheet-up 350ms cubic-bezier(0.22, 1, 0.36, 1) both",
         shimmer: "shimmer 1.6s linear infinite",
+        "toast-in": "toast-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        "toast-out": "toast-out 260ms cubic-bezier(0.64, 0, 0.78, 0) both",
+        "menu-in": "menu-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        "drawer-in": "drawer-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        float: "float 7s ease-in-out infinite",
+        marquee: "marquee 32s linear infinite",
+        kenburns: "kenburns 9s ease-out both",
+        // Duration must match AUTOPLAY_MS in components/home/Hero.tsx.
+        "slide-progress": "slide-progress 6500ms linear both",
       },
 
       // Gradient used by the shimmer skeleton. Usage:
@@ -284,6 +336,16 @@ const config = {
       backgroundImage: {
         shimmer:
           "linear-gradient(90deg, #F1F2F4 25%, #FAFAFB 50%, #F1F2F4 75%)",
+        // Subtle warm sheen for the Copeland label and gold CTAs.
+        "gold-sheen":
+          "linear-gradient(135deg, #D6B870 0%, #B78D44 45%, #9A7336 100%)",
+        // Fine grid used behind dark editorial sections.
+        grid:
+          "linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px)",
+      },
+
+      backgroundSize: {
+        "grid-44": "44px 44px",
       },
     },
   },

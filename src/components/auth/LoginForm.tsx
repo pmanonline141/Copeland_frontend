@@ -1,20 +1,25 @@
-"use client";
+ "use client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AuthHeading } from "./AuthShell";
 import { Notice, PasswordField, SubmitButton, TextField } from "./fields";
 import { useCooldown } from "./useCooldown";
 import { MailIcon } from "@/components/ui/icons";
+import { useAlert } from "@/hooks/useAlert";
 import { safeNext, validateEmail } from "@/lib/validation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearAuthError, describeAuthError, resendVerification, selectAuth, signIn } from "@/store/slices/authSlice";
 import { ROLE_HOME } from "@/types/auth";
 
+/** How long the success alert shows before redirecting. */
+const SUCCESS_DELAY_MS = 1600;
+
 export default function LoginForm() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const params = useSearchParams();
+  const alert = useAlert();
   const next = safeNext(params.get("next"));
   const { status, user, signIn: signInState, email: emailState, error, needsVerification } = useAppSelector(selectAuth);
 
@@ -23,13 +28,24 @@ export default function LoginForm() {
   const [errors, setErrors] = useState<{ email?: string | null; password?: string | null }>({});
   const [notice, setNotice] = useState<string | null>(null);
   const [resent, setResent] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+  const justSignedIn = useRef(false);
   const cooldown = useCooldown(30);
 
   useEffect(() => { dispatch(clearAuthError()); }, [dispatch]);
 
-  // Already signed in (or just signed in): go to ?next, else the user's own area.
+  // Already signed in when the page opened: go straight to ?next or the user's own area.
+  // Just signed in via this form: wait a moment so the success alert can be seen.
   useEffect(() => {
-    if (status === "authenticated" && user) router.replace(next ?? ROLE_HOME[user.role]);
+    if (status !== "authenticated" || !user) return;
+    const go = () => router.replace(next ?? ROLE_HOME[user.role]);
+
+    if (!justSignedIn.current) {
+      go();
+      return;
+    }
+    const t = window.setTimeout(go, SUCCESS_DELAY_MS);
+    return () => window.clearTimeout(t);
   }, [status, user, next, router]);
 
   async function onSubmit(e: React.FormEvent) {
@@ -40,8 +56,18 @@ export default function LoginForm() {
     setResent(false);
     if (v.email || v.password) return;
 
+    // Set before dispatching so the redirect effect above knows this was a fresh sign-in.
+    justSignedIn.current = true;
     const res = await dispatch(signIn({ email, password }));
-    if (signIn.fulfilled.match(res) && !res.payload) {
+
+    if (signIn.fulfilled.match(res) && res.payload) {
+      setRedirecting(true);
+      alert.success("Redirecting you now...", { title: "Welcome back", duration: 3000 });
+      return;
+    }
+
+    justSignedIn.current = false;
+    if (signIn.fulfilled.match(res)) {
       // Signed in, but the session cookie did not come back: almost always a cross-site cookie / CORS setup issue.
       setNotice("You were signed in, but your browser did not keep the session. Please allow cookies for this site and try again.");
     }
@@ -55,14 +81,14 @@ export default function LoginForm() {
     }
   }
 
-  const busy = signInState === "pending";
+  const busy = signInState === "pending" || redirecting;
   const justReset = params.get("reset") === "1";
 
   return (
     <>
       <AuthHeading title="Welcome back" subtitle="Sign in to track orders, manage your catalogue or run the Copeland dashboard." />
 
-      <form onSubmit={onSubmit} noValidate className="space-y-5">
+      <form id="login-form" onSubmit={onSubmit} noValidate className="space-y-5">
         {justReset && <Notice tone="success">Password updated. Sign in with your new password.</Notice>}
         {notice && <Notice tone="warning">{notice}</Notice>}
 
@@ -80,18 +106,45 @@ export default function LoginForm() {
           error && !busy && <Notice tone="error">{describeAuthError(error, "signIn")}</Notice>
         )}
 
-        <TextField label="Email" type="email" name="email" autoComplete="email" inputMode="email" placeholder="you@company.com" icon={<MailIcon className="h-5 w-5" />}
-          value={email} onChange={(e) => setEmail(e.target.value)} onBlur={() => setErrors((p) => ({ ...p, email: email ? validateEmail(email) : null }))} error={errors.email} disabled={busy} />
+        <TextField 
+          label="Email" 
+          type="email" 
+          name="email" 
+          autoComplete="username email" // UPDATED: Better password manager recognition
+          inputMode="email" 
+          placeholder="you@company.com" 
+          icon={<MailIcon className="h-5 w-5" />}
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          onBlur={() => setErrors((p) => ({ ...p, email: email ? validateEmail(email) : null }))} 
+          error={errors.email} 
+          disabled={busy} 
+        />
 
         <div>
-          <PasswordField label="Password" name="password" autoComplete="current-password" placeholder="Your password"
-            value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} disabled={busy} />
+          <PasswordField 
+            label="Password" 
+            name="password" 
+            autoComplete="current-password" 
+            placeholder="Your password"
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)} 
+            error={errors.password} 
+            disabled={busy} 
+          />
           <div className="mt-2 text-right">
             <Link href="/forgot-password" className="text-sm font-medium text-gold-700 hover:text-gold-800 hover:underline">Forgot password?</Link>
           </div>
         </div>
 
-        <SubmitButton loading={busy} loadingText="Signing in">Sign in</SubmitButton>
+        <SubmitButton 
+          type="submit" // UPDATED: Forces the browser to recognize this as the form submission
+          form="login-form" // UPDATED: Links to the form ID
+          loading={busy} 
+          loadingText={redirecting ? "Redirecting" : "Signing in"}
+        >
+          Sign in
+        </SubmitButton>
       </form>
 
       <p className="mt-8 text-center text-sm text-ink-soft">

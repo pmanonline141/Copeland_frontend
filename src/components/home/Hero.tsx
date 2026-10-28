@@ -1,88 +1,517 @@
-import Link from "next/link";
-import { ArrowRightIcon, CheckIcon, ShieldCheckIcon, ShirtIcon } from "@/components/ui/icons";
-import { btn } from "@/components/ui/button";
+// "use client";
+// import Link from "next/link";
+// import { useCallback, useEffect, useState } from "react";
+// import { CopelandBadge } from "@/components/ui/Badge";
+// import { btn } from "@/components/ui/button";
+// import { ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from "@/components/ui/icons";
+// import { cn } from "@/utils/cn";
+// import { imageUrl } from "@/utils/image";
 
-const POINTS = ["Every listing is moderated", "The Copeland badge means Copeland is accountable", "Track each order from supplier to door"];
+// /** Keep in sync with the slide-progress animation duration in tailwind.config.ts. */
+// const AUTOPLAY_MS = 6500;
+
+// interface Slide {
+//   id: string;
+//   eyebrow: string;
+//   title: React.ReactNode;
+//   body: string;
+//   image: string;
+//   badges?: string[];
+//   primary: { label: string; href: string };
+//   secondary: { label: string; href: string };
+// }
+
+// const SLIDES: Slide[] = [
+//   {
+//     id: "label",
+//     eyebrow: "Copeland · Private label",
+//     title: (
+//       <>
+//         Tailored essentials,
+//         <br />
+//         <span className="italic text-gold-300">held to a standard we publish.</span>
+//       </>
+//     ),
+//     body: "Our own luxury tier begins deliberately small — few styles, higher specifications, and sample-approved quality before bulk production.",
+//     image: imageUrl(
+//       "luxury fashion campaign photograph, elegant West African model in a tailored deep navy suit with subtle gold accents, dramatic editorial lighting, full body, dark elegant backdrop, high-end brand campaign, cinematic",
+//       "landscape_16_9",
+//     ),
+//     badges: ["Copeland · Luxury tier"],
+//     primary: { label: "Explore the label", href: "/copeland" },
+//     secondary: { label: "Shop everything", href: "/shop" },
+//   },
+//   {
+//     id: "marketplace",
+//     eyebrow: "Verified suppliers",
+//     title: (
+//       <>
+//         Clothing infrastructure for
+//         <br />
+//         <span className="italic text-gold-300">Nigeria &amp; West Africa.</span>
+//       </>
+//     ),
+//     body: "Browse a moderated catalogue from verified suppliers — every listing reviewed before it goes live, every order tracked to your door.",
+//     image: imageUrl(
+//       "wide cinematic photograph of an organised West African garment workshop, fabric rolls and sewing stations, warm daylight through tall windows, documentary style, professional, shallow depth of field",
+//       "landscape_16_9",
+//     ),
+//     badges: ["Moderated", "Tracked delivery"],
+//     primary: { label: "Shop the catalogue", href: "/shop" },
+//     secondary: { label: "Become a supplier", href: "/partners/apply" },
+//   },
+//   {
+//     id: "institutions",
+//     eyebrow: "For firms & institutions",
+//     title: (
+//       <>
+//         Equip a whole team
+//         <br />
+//         <span className="italic text-gold-300">from one request.</span>
+//       </>
+//     ),
+//     body: "Uniform, workwear and bulk programmes with clear lead times, MOQs and consolidated delivery — one quote instead of chasing suppliers.",
+//     image: imageUrl(
+//       "wide cinematic photograph of neatly stacked folded uniforms and parcels in a bright modern logistics warehouse, a worker checking a clipboard in the background, professional, warm light",
+//       "landscape_16_9",
+//     ),
+//     badges: ["Bulk & institutional"],
+//     primary: { label: "Request a quote", href: "/rfq" },
+//     secondary: { label: "How it works", href: "/#categories" },
+//   },
+// ];
+
+// export default function Hero() {
+//   const [index, setIndex] = useState(0);
+//   const [paused, setPaused] = useState(false);
+//   const [reduced, setReduced] = useState(false);
+
+//   const go = useCallback((next: number) => setIndex((next + SLIDES.length) % SLIDES.length), []);
+
+//   // Respect the user's motion preference: no autoplay, no Ken Burns.
+//   useEffect(() => {
+//     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+//     setReduced(mq.matches);
+//     const onChange = () => setReduced(mq.matches);
+//     mq.addEventListener("change", onChange);
+//     return () => mq.removeEventListener("change", onChange);
+//   }, []);
+
+//   useEffect(() => {
+//     if (paused || reduced) return;
+//     const timer = window.setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), AUTOPLAY_MS);
+//     return () => window.clearInterval(timer);
+//   }, [paused, reduced]);
+
+//   const slide = SLIDES[index]!;
+
+//   return (
+//     <section
+//       aria-roledescription="carousel"
+//       aria-label="Featured at Copeland"
+//       className="relative isolate flex h-[88svh] min-h-[34rem] w-full items-end overflow-hidden bg-navy text-white"
+//       onMouseEnter={() => setPaused(true)}
+//       onMouseLeave={() => setPaused(false)}
+//       onFocusCapture={() => setPaused(true)}
+//       onBlurCapture={() => setPaused(false)}
+//     >
+//       {/* Slides */}
+//       {SLIDES.map((s, i) => {
+//         const active = i === index;
+//         return (
+//           <div
+//             key={s.id}
+//             aria-hidden={!active}
+//             className={cn("absolute inset-0 transition-opacity duration-700 ease-out-soft", active ? "opacity-100" : "opacity-0")}
+//           >
+//             <img
+//               src={s.image}
+//               alt=""
+//               aria-hidden
+//               loading={i === 0 ? "eager" : "lazy"}
+//               decoding="async"
+//               className={cn("h-full w-full object-cover", active && !reduced && "animate-kenburns")}
+//             />
+//           </div>
+//         );
+//       })}
+
+//       {/* Darkening layers so overlay copy stays readable on any image */}
+//       <div aria-hidden className="absolute inset-0 bg-navy/55" />
+//       <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/70 to-navy/25" />
+//       <div aria-hidden className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-navy via-navy/55 to-transparent" />
+//       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+
+//       {/* Copy */}
+//       <div className="container relative z-10 pb-14 sm:pb-16 lg:pb-20">
+//         <div key={slide.id} className="max-w-3xl animate-fade-up">
+//           {slide.badges && (
+//             <div className="mb-6  flex flex-wrap items-center gap-2">
+//               {slide.badges.map((b, i) =>
+//                 i === 0 ? (
+//                   <CopelandBadge key={b} tone="navy" label={b} />
+//                 ) : (
+//                   <span key={b} className="rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-white/85 backdrop-blur">
+//                     {b}
+//                   </span>
+//                 ),
+//               )}
+//             </div>
+//           )}
+
+//           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">{slide.eyebrow}</p>
+
+//           <h1 className="mt-4 text-balance font-serif text-[2.4rem] font-semibold leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
+//             {slide.title}
+//           </h1>
+
+//           <p className="mt-5 max-w-xl text-base text-white/80 sm:text-lg">{slide.body}</p>
+
+//           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+//             <Link href={slide.primary.href} className={btn("gold", "lg", "group")}>
+//               {slide.primary.label}
+//               <ArrowRightIcon className="h-4 w-4 transition-transform duration-base ease-out-soft group-hover:translate-x-1" />
+//             </Link>
+//             <Link href={slide.secondary.href} className={btn("outlineLight", "lg")}>
+//               {slide.secondary.label}
+//             </Link>
+//           </div>
+//         </div>
+
+//         {/* Controls: slide counter, progress, dots, arrows */}
+//         <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
+//           <span className="font-serif text-sm text-white/70">
+//             <span className="text-white">{String(index + 1).padStart(2, "0")}</span> / {String(SLIDES.length).padStart(2, "0")}
+//           </span>
+
+//           <div className="flex items-center gap-2">
+//             {SLIDES.map((s, i) => (
+//               <button
+//                 key={s.id}
+//                 type="button"
+//                 onClick={() => go(i)}
+//                 aria-label={`Go to slide ${i + 1}`}
+//                 aria-current={i === index}
+//                 className={cn(
+//                   "h-1.5 rounded-full transition-all duration-base ease-out-soft",
+//                   i === index ? "w-8 bg-gold" : "w-4 bg-white/35 hover:bg-white/60",
+//                 )}
+//               />
+//             ))}
+//           </div>
+
+//           <div className="flex items-center gap-2">
+//             <button
+//               type="button"
+//               onClick={() => go(index - 1)}
+//               aria-label="Previous slide"
+//               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-white/85 transition-colors duration-fast hover:border-gold hover:bg-white/10 hover:text-white"
+//             >
+//               <ChevronLeftIcon className="h-5 w-5" />
+//             </button>
+//             <button
+//               type="button"
+//               onClick={() => go(index + 1)}
+//               aria-label="Next slide"
+//               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-white/85 transition-colors duration-fast hover:border-gold hover:bg-white/10 hover:text-white"
+//             >
+//               <ChevronRightIcon className="h-5 w-5" />
+//             </button>
+//             {!reduced && (
+//               <button
+//                 type="button"
+//                 onClick={() => setPaused((p) => !p)}
+//                 aria-label={paused ? "Play slideshow" : "Pause slideshow"}
+//                 className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-white/85 transition-colors duration-fast hover:border-gold hover:bg-white/10 hover:text-white"
+//               >
+//                 {paused ? <PlayIcon className="h-5 w-5" /> : <PauseIcon className="h-5 w-5" />}
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Autoplay progress */}
+//       {!reduced && (
+//         <div aria-hidden className="absolute inset-x-0 bottom-0 z-10 h-0.5 bg-white/15">
+//           <div
+//             key={index}
+//             className="h-full animate-slide-progress bg-gold"
+//             style={{ animationPlayState: paused ? "paused" : "running" }}
+//           />
+//         </div>
+//       )}
+//     </section>
+//   );
+// }
+
+
+"use client";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import { CopelandBadge } from "@/components/ui/Badge";
+import { btn } from "@/components/ui/button";
+import { ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from "@/components/ui/icons";
+import { cn } from "@/utils/cn";
+
+/** Keep in sync with the slide-progress animation duration in tailwind.config.ts. */
+const AUTOPLAY_MS = 6500;
 
 /**
- * The visual on the right is a design placeholder built from CSS only.
- * Swap the two cards for real photography (white/light-grey backdrop, per the photography
- * standards) once the first Copeland luxury and supplier products are shot.
+ * BACKGROUND IMAGES
+ * Temporary photos from Pexels (free to use). When your own images are ready, put them in
+ * src/assets/hero/ and swap each `image:` below for an import, for example:
+ *
+ *   import labelBg from "@/assets/hero/label.jpg";
+ *   ...
+ *   image: labelBg.src,
+ *
+ * Use landscape photos of at least 1920px wide, with the subject away from the left edge
+ * (the headline sits on the left). `position` decides which part is kept when the image is cropped.
  */
-function HeroVisual() {
-  return (
-    <div className="relative mx-auto w-full max-w-md lg:ml-auto lg:mr-0 lg:max-w-[28rem]">
-      <div aria-hidden className="absolute -inset-6 rounded-[2rem] border border-gold/30" />
+const pexels = (id: number, width = 1920) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${width}`;
 
-      {/* Main card: Copeland label */}
-      <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-navy shadow-overlay animate-fade-up">
-        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(28rem_20rem_at_70%_15%,rgb(183_141_68/0.28),transparent_60%)]" />
-        <div className="relative flex h-full flex-col justify-between p-6 sm:p-8">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-300">Copeland · Luxury tier</span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gold/60 text-gold-300"><ShieldCheckIcon className="h-5 w-5" /></span>
-          </div>
-          <ShirtIcon className="mx-auto h-40 w-40 text-gold/55 sm:h-48 sm:w-48" strokeWidth={0.8} />
-          <div>
-            <p className="font-serif text-2xl text-white sm:text-3xl">Tailored essentials</p>
-            <p className="mt-1 text-sm text-white/70">Sample approved in Nigeria before bulk production.</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Supplier card */}
-      <div className="absolute -bottom-6 -left-3 w-48 rounded-lg bg-paper p-3 shadow-card-hover animate-fade-up sm:-left-8 sm:w-56" style={{ animationDelay: "150ms" }}>
-        <div className="flex aspect-[5/3] items-center justify-center rounded-md bg-mist">
-          <ShirtIcon className="h-12 w-12 text-ink-faint" strokeWidth={1} />
-        </div>
-        <div className="mt-3 flex items-center justify-between gap-2">
-          <span className="text-sm font-medium text-ink">Supplier listing</span>
-          <span className="rounded-full bg-success-soft px-2 py-0.5 text-xs font-medium text-success">Moderated</span>
-        </div>
-      </div>
-
-      {/* Promise chip */}
-      <div className="absolute -right-4 top-1/2 hidden items-center gap-2 rounded-full border border-gold/40 bg-paper px-4 py-2 shadow-card animate-fade-up sm:flex" style={{ animationDelay: "300ms" }}>
-        <ShieldCheckIcon className="h-4 w-4 text-gold-600" />
-        <span className="text-xs font-semibold text-ink">Reviewed · Approved · Accountable</span>
-      </div>
-    </div>
-  );
+interface Slide {
+  id: string;
+  eyebrow: string;
+  title: React.ReactNode;
+  body: string;
+  image: string;
+  /** CSS object-position for the image, e.g. "center 25%". */
+  position?: string;
+  badges?: string[];
+  primary: { label: string; href: string };
+  secondary: { label: string; href: string };
 }
 
-export default function Hero() {
-  return (
-    <section className="relative overflow-hidden bg-ivory">
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_30rem_at_85%_-10%,rgb(183_141_68/0.16),transparent_60%),radial-gradient(40rem_28rem_at_-10%_110%,rgb(1_19_50/0.07),transparent_60%)]" />
+const SLIDES: Slide[] = [
+  {
+    id: "label",
+    eyebrow: "Copeland · Private label",
+    title: (
+      <>
+        Tailored essentials,
+        <br />
+        <span className="italic text-gold-300">held to a standard we publish.</span>
+      </>
+    ),
+    body: "Our own luxury tier begins deliberately small — few styles, higher specifications, and sample-approved quality before bulk production.",
+    image: pexels(9363150), // man in a suit (portrait photo, cropped to fit)
+    position: "center 22%",
+    badges: ["Copeland · Luxury tier"],
+    primary: { label: "Explore the label", href: "/copeland" },
+    secondary: { label: "Shop everything", href: "/shop" },
+  },
+  {
+    id: "marketplace",
+    eyebrow: "Verified suppliers",
+    title: (
+      <>
+        Clothing infrastructure for
+        <br />
+        <span className="italic text-gold-300">Nigeria &amp; West Africa.</span>
+      </>
+    ),
+    body: "Browse a moderated catalogue from verified suppliers — every listing reviewed before it goes live, every order tracked to your door.",
+    image: pexels(3965543), // fabric rolls and patterns in a tailor's atelier
+    position: "center",
+    badges: ["Moderated", "Tracked delivery"],
+    primary: { label: "Shop the catalogue", href: "/shop" },
+    secondary: { label: "Become a supplier", href: "/partners/apply" },
+  },
+  {
+    id: "institutions",
+    eyebrow: "For firms & institutions",
+    title: (
+      <>
+        Equip a whole team
+        <br />
+        <span className="italic text-gold-300">from one request.</span>
+      </>
+    ),
+    body: "Uniform, workwear and bulk programmes with clear lead times, MOQs and consolidated delivery — one quote instead of chasing suppliers.",
+    image: pexels(4483943), // warehouse worker with stacked boxes
+    position: "center",
+    badges: ["Bulk & institutional"],
+    primary: { label: "Request a quote", href: "/rfq" },
+    secondary: { label: "How it works", href: "/#categories" },
+  },
+];
 
-      <div className="container relative grid items-center gap-16 py-14 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:py-20">
-        <div className="animate-fade-up">
-          <p className="eyebrow">Clothing infrastructure · Nigeria &amp; West Africa</p>
-          <h1 className="mt-5 text-[2.5rem] font-semibold leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-[3.5rem]">
-            Reliable clothing,
-            <span className="block italic text-gold-600">from suppliers you can trust.</span>
+export default function Hero() {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [reduced, setReduced] = useState(false);
+
+  const go = useCallback((next: number) => setIndex((next + SLIDES.length) % SLIDES.length), []);
+
+  // Respect the user's motion preference: no autoplay, no Ken Burns.
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (paused || reduced) return;
+    const timer = window.setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), AUTOPLAY_MS);
+    return () => window.clearInterval(timer);
+  }, [paused, reduced]);
+
+  const slide = SLIDES[index]!;
+
+  return (
+    <section
+      aria-roledescription="carousel"
+      aria-label="Featured at Copeland"
+      /*
+       * FIX: this used a fixed height (h-[88svh]) with the copy pinned to the bottom. When the copy
+       * was taller than the box (short screens, long headlines) its TOP was pushed out of the section
+       * and clipped by overflow-hidden, which looked like the navbar was covering it.
+       * Now the section only has a MINIMUM height (roughly one screen below the announcement bar and
+       * navbar, ~9.5rem) and grows to fit its content, and the copy has top padding as a safety margin.
+       */
+      className="relative isolate flex min-h-[max(34rem,calc(100svh-9.5rem))] w-full items-end overflow-hidden bg-navy text-white"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
+      {/* Slides */}
+      {SLIDES.map((s, i) => {
+        const active = i === index;
+        return (
+          <div
+            key={s.id}
+            aria-hidden={!active}
+            className={cn("absolute inset-0 transition-opacity duration-700 ease-out-soft", active ? "opacity-100" : "opacity-0")}
+          >
+            <img
+              src={s.image}
+              alt=""
+              aria-hidden
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : "auto"}
+              decoding="async"
+              style={{ objectPosition: s.position ?? "center" }}
+              className={cn("h-full w-full object-cover", active && !reduced && "animate-kenburns")}
+            />
+          </div>
+        );
+      })}
+
+      {/* Darkening layers so overlay copy stays readable on any image */}
+      {/* Small screens: the copy spans the full width, so use an even wash instead of a side fade. */}
+      <div aria-hidden className="absolute inset-0 bg-navy/65 lg:hidden" />
+      {/* Large screens: solid navy behind the copy (left), fading to a clear, full-colour photo on the right.
+          Tune the stops: lower `via-*%` shows more photo sooner; raise the alphas for stronger text contrast. */}
+      <div aria-hidden className="absolute inset-0 hidden bg-gradient-to-r from-navy/95 via-navy/80 via-35% to-transparent to-75% lg:block" />
+      {/* Light bottom fade just so the slider controls stay readable */}
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-navy/80 to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+
+      {/* Copy. The top padding guarantees the first line (badge) never touches the edge or the navbar. */}
+      <div className="container relative z-10 pb-14 pt-10 sm:pb-16 sm:pt-12 lg:pb-20 lg:pt-14">
+        <div key={slide.id} className="max-w-3xl animate-fade-up">
+          {slide.badges && (
+            <div className="mb-6 flex flex-wrap items-center gap-2">
+              {slide.badges.map((b, i) =>
+                i === 0 ? (
+                  <CopelandBadge key={b} tone="navy" label={b} />
+                ) : (
+                  <span key={b} className="rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-white/85 backdrop-blur">
+                    {b}
+                  </span>
+                ),
+              )}
+            </div>
+          )}
+
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold-300">{slide.eyebrow}</p>
+
+          <h1 className="mt-4 text-balance font-serif text-[2.4rem] font-semibold leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl">
+            {slide.title}
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-ink-soft">
-            Browse moderated garments from verified suppliers, or choose the Copeland label: reviewed, approved and backed by us for quality, fit and delivery.
-          </p>
+
+          <p className="mt-5 max-w-xl text-base text-white/80 sm:text-lg">{slide.body}</p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link href="/shop" className={btn("primary", "lg")}>Shop the catalogue <ArrowRightIcon className="h-4 w-4" /></Link>
-            <Link href="/rfq" className={btn("outline", "lg")}>Request a bulk quote</Link>
+            <Link href={slide.primary.href} className={btn("gold", "lg", "group")}>
+              {slide.primary.label}
+              <ArrowRightIcon className="h-4 w-4 transition-transform duration-base ease-out-soft group-hover:translate-x-1" />
+            </Link>
+            <Link href={slide.secondary.href} className={btn("outlineLight", "lg")}>
+              {slide.secondary.label}
+            </Link>
           </div>
-
-          <ul className="mt-10 space-y-3">
-            {POINTS.map((p) => (
-              <li key={p} className="flex items-center gap-3 text-sm text-ink-soft sm:text-base">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gold/60 text-gold-700"><CheckIcon className="h-3.5 w-3.5" strokeWidth={2.2} /></span>
-                {p}
-              </li>
-            ))}
-          </ul>
         </div>
 
-        <HeroVisual />
+        {/* Controls: slide counter, progress, dots, arrows */}
+        <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-4">
+          <span className="font-serif text-sm text-white/70">
+            <span className="text-white">{String(index + 1).padStart(2, "0")}</span> / {String(SLIDES.length).padStart(2, "0")}
+          </span>
+
+          <div className="flex items-center gap-2">
+            {SLIDES.map((s, i) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => go(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                aria-current={i === index}
+                className={cn(
+                  "h-1.5 rounded-full transition-all duration-base ease-out-soft",
+                  i === index ? "w-8 bg-gold" : "w-4 bg-white/35 hover:bg-white/60",
+                )}
+              />
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => go(index - 1)}
+              aria-label="Previous slide"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-white/85 transition-colors duration-fast hover:border-gold hover:bg-white/10 hover:text-white"
+            >
+              <ChevronLeftIcon className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => go(index + 1)}
+              aria-label="Next slide"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-white/85 transition-colors duration-fast hover:border-gold hover:bg-white/10 hover:text-white"
+            >
+              <ChevronRightIcon className="h-5 w-5" />
+            </button>
+            {!reduced && (
+              <button
+                type="button"
+                onClick={() => setPaused((p) => !p)}
+                aria-label={paused ? "Play slideshow" : "Pause slideshow"}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 text-white/85 transition-colors duration-fast hover:border-gold hover:bg-white/10 hover:text-white"
+              >
+                {paused ? <PlayIcon className="h-5 w-5" /> : <PauseIcon className="h-5 w-5" />}
+              </button>
+            )}
+          </div>
+        </div>
       </div>
+
+      {/* Autoplay progress */}
+      {!reduced && (
+        <div aria-hidden className="absolute inset-x-0 bottom-0 z-10 h-0.5 bg-white/15">
+          <div
+            key={index}
+            className="h-full animate-slide-progress bg-gold"
+            style={{ animationPlayState: paused ? "paused" : "running" }}
+          />
+        </div>
+      )}
     </section>
   );
 }

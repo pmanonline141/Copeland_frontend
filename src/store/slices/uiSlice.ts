@@ -16,9 +16,11 @@ interface UiState {
   alerts: Alert[];
   /** Number of running tasks that want the full-screen loader. Above 0 = visible. */
   loadingCount: number;
+  /** Whether the slide-out cart drawer is open. */
+  cartOpen: boolean;
 }
 
-const initialState: UiState = { alerts: [], loadingCount: 0 };
+const initialState: UiState = { alerts: [], loadingCount: 0, cartOpen: false };
 
 const MAX_ALERTS = 4;
 let seq = 0;
@@ -48,8 +50,22 @@ const uiSlice = createSlice({
     stopLoading(state) {
       state.loadingCount = Math.max(0, state.loadingCount - 1);
     },
+    setCartOpen(state, action: PayloadAction<boolean>) {
+      state.cartOpen = action.payload;
+    },
   },
 });
 
-export const { showAlert, dismissAlert, clearAlerts, startLoading, stopLoading } = uiSlice.actions;
+export const {
+  showAlert,
+  dismissAlert,
+  clearAlerts,
+  startLoading,
+  stopLoading,
+  setCartOpen,
+} = uiSlice.actions;
+
 export default uiSlice.reducer;
+
+type S = { ui: UiState };
+export const selectCartOpen = (s: S) => s.ui.cartOpen;
